@@ -3,6 +3,7 @@ package com.muratkistan.product_service.product;
 import com.muratkistan.product_service.exception.ProductPurchaseException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
 
+    @Override
     public Integer createProduct(
             ProductRequest request
     ) {
@@ -26,20 +28,29 @@ public class ProductServiceImpl implements ProductService {
         return repository.save(product).getId();
     }
 
+    @Override
     public ProductResponse findById(Integer id) {
         return repository.findById(id)
                 .map(mapper::toProductResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID:: " + id));
     }
 
+    @Override
     @Cacheable(value = "productList",cacheManager = "listCacheManager")
-    public List<ProductResponse> findAll() {
+    public List<ProductResponse> getAllProducts() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toProductResponse)
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @CacheEvict(value = "productList",cacheManager = "defaultCacheManager")
+    public void getProductListCacheUpdate() {
+        getAllProducts();
+    }
+
+    @Override
     @Transactional(rollbackFor = ProductPurchaseException.class)
     public List<ProductPurchaseResponse> purchaseProducts(List<ProductPurchaseRequest> request
     ) {

@@ -6,6 +6,7 @@ public interface ProductService {
 
     Integer createProduct(ProductRequest request);
     ProductResponse findById(Integer id);
-    List<ProductResponse> findAll();
+    List<ProductResponse> getAllProducts();
+    void getProductListCacheUpdate();
     List<ProductPurchaseResponse> purchaseProducts(List<ProductPurchaseRequest> request);
 }
