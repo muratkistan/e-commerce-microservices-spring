@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "productList",cacheManager = "listCacheManager")
+//    @Cacheable(value = "productList",cacheManager = "listCacheManager")
     public List<ProductResponse> getAllProducts() {
         return repository.findAll()
                 .stream()
@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @CacheEvict(value = "productList",cacheManager = "defaultCacheManager")
+//    @CacheEvict(value = "productList",cacheManager = "listCacheManager")
     public void getProductListCacheUpdate() {
         getAllProducts();
     }
