@@ -3,6 +3,7 @@ package com.muratkistan.product_service.product;
 import com.muratkistan.product_service.exception.ProductPurchaseException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID:: " + id));
     }
 
+    @Cacheable(value = "productList",cacheManager = "listCacheManager")
     public List<ProductResponse> findAll() {
         return repository.findAll()
                 .stream()
