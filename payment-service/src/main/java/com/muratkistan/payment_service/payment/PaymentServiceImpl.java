@@ -15,9 +15,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository repository;
     private final ModelMapper modelMapper;
     private final NotificationProducer notificationProducer;
+    private final PaymentMapper paymentMapper;
 
     public Integer createPayment(PaymentRequest request) {
-        var payment = this.repository.save(this.modelMapper.map(request,Payment.class));
+        var payment = this.repository.save(paymentMapper.toPayment(request));
 
         this.notificationProducer.sendNotification(
                 new PaymentNotificationRequest(

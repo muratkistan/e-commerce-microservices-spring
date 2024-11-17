@@ -29,7 +29,9 @@ public class OrderServiceImpl implements  OrderService {
     private final ProductClient productClient;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
+    private final OrderMapper mapper;
+
 
 
     @Override
@@ -40,7 +42,7 @@ public class OrderServiceImpl implements  OrderService {
 
         var purchasedProducts = productClient.purchaseProducts(request.products());
 
-        var order = this.repository.save(modelMapper.map(request,Order.class));
+        var order = this.repository.save(mapper.toOrder(request));
 
         for (PurchaseRequest purchaseRequest : request.products()) {
             orderLineService.saveOrderLine(
@@ -53,7 +55,7 @@ public class OrderServiceImpl implements  OrderService {
             );
         }
         var paymentRequest = new PaymentRequest(
-                request.amount(),
+                request.totalAmount(),
                 request.paymentMethod(),
                 order.getId(),
                 order.getReference(),
@@ -64,7 +66,7 @@ public class OrderServiceImpl implements  OrderService {
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
                         request.reference(),
-                        request.amount(),
+                        request.totalAmount(),
                         request.paymentMethod(),
                         customer,
                         purchasedProducts
@@ -78,14 +80,14 @@ public class OrderServiceImpl implements  OrderService {
     public List<OrderResponse> findAllOrders() {
         return this.repository.findAll()
                 .stream()
-                .map(order -> modelMapper.map(order, OrderResponse.class))
+                .map(this.mapper::fromOrder)
                 .collect(Collectors.toList());
     }
 
     @Override
     public OrderResponse findById(Integer id) {
         return this.repository.findById(id)
-                .map(order -> modelMapper.map(order, OrderResponse.class))
+                .map(this.mapper::fromOrder)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("No order found with the provided ID: %d", id)));
     }
 }
