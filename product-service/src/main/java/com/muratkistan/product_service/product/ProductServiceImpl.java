@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean existsById(String id) {
+    public boolean existsById(Integer id) {
         return this.repository.findById(id)
                 .isPresent();
     }
