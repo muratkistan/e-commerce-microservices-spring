@@ -9,4 +9,5 @@ public interface ProductService {
     List<ProductResponse> getAllProducts();
     void getProductListCacheUpdate();
     List<ProductPurchaseResponse> purchaseProducts(List<ProductPurchaseRequest> request);
+    boolean existsById(Integer id);
 }

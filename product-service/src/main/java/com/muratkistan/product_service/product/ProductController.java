@@ -39,4 +39,10 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> findAll() {
         return ResponseEntity.ok(service.getAllProducts());
     }
+
+    @GetMapping("/exists/{productId}")
+    public ResponseEntity<Boolean> existsById(@PathVariable("productId") String productId
+    ) {
+        return ResponseEntity.ok(service.existsById(productId));
+    }
 }

@@ -80,4 +80,10 @@ public class ProductServiceImpl implements ProductService {
         }
         return purchasedProducts;
     }
+
+    @Override
+    public boolean existsById(String id) {
+        return this.repository.findById(id)
+                .isPresent();
+    }
 }
