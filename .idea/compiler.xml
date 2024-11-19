@@ -10,6 +10,7 @@
         <module name="config-server" />
         <module name="payment-service" />
         <module name="customer-service" />
+        <module name="review-service" />
         <module name="api-gateway" />
         <module name="product-service" />
         <module name="order-service" />
@@ -27,6 +28,7 @@
       <module name="order-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
+      <module name="review-service" options="-parameters" />
       <module name="service-registry" options="-parameters" />
     </option>
   </component>
