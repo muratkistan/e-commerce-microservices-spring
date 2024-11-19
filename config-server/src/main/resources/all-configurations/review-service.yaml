@@ -1,0 +1,16 @@
+
+server:
+  port: 8030
+
+spring:
+  data:
+    elasticsearch:
+      cluster-names: review-cluster
+      cluster-node: localhost:9200
+
+
+
+application:
+  config:
+    customer-url: http://localhost:8222/api/v1/customers
+    product-url: http://localhost:8222/api/v1/products
