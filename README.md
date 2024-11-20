@@ -22,7 +22,9 @@ This project is an example of an e-commerce application built using microservice
 
 ## Architecture
 
-The application follows a microservices architecture, where each service is independently deployable and scalable. The services communicate with each other using REST APIs.
+The application follows a microservices architecture, where each service is independently deployable and scalable. The services communicate with each other using REST APIs.<br><br>
+![e-commerce-diagram-Murat drawio1 svg](https://github.com/user-attachments/assets/6ec5caee-98d0-407b-b3d7-e5b0094b80e6)
+
 
 ## Technologies
 - Java 17
@@ -41,6 +43,7 @@ The application follows a microservices architecture, where each service is inde
 - Redis
 - Elasticsearch
 - Docker
+
 
 ## Services
 
