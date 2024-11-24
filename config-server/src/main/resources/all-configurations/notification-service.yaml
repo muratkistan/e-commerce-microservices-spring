@@ -1,6 +1,8 @@
 server:
   port: 8040
 spring:
+  profiles:
+    active: docker
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/notification?ssl=false
@@ -29,3 +31,18 @@ spring:
         connectiontimeout: 5000
         timeout: 3000
         writetimeout: 5000
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://ms-mongo:27017/notification?ssl=false
+  kafka:
+    consumer:
+      bootstrap-servers: ms-kafka:9092
+  mail:
+    host: ms-mail-dev

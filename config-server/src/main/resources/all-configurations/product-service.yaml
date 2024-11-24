@@ -1,6 +1,13 @@
 server:
   port: 8050
 spring:
+  profiles:
+    active: docker
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/product
@@ -14,6 +21,25 @@ spring:
   data:
     redis:
       host: 127.0.0.1
+      port: 6379
+      password:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ms-postgre:5432/product
+    username: muratkistan
+    password: muratkistan
+  data:
+    redis:
+      host: ms-redis
       port: 6379
       password:
   jackson:

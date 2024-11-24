@@ -1,6 +1,8 @@
 server:
   port: 8070
 spring:
+  profiles:
+    active: docker
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/order
@@ -21,6 +23,30 @@ spring:
 
 application:
   config:
-    customer-url: http://localhost:8222/api/v1/customers
-    payment-url: http://localhost:8222/api/v1/payments
-    product-url: http://localhost:8222/api/v1/products
+    customer-url: http://localhost:8020/api/v1/customers
+    payment-url: http://localhost:8020/api/v1/payments
+    product-url: http://localhost:8020/api/v1/products
+
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ms-postgre:5432/order
+    username: muratkistan
+    password: muratkistan
+
+  kafka:
+    producer:
+      bootstrap-servers: ms-kafka:9092
+
+application:
+  config:
+    customer-url: http://api-gateway:8020/api/v1/customers
+    payment-url: http://api-gateway:8020/api/v1/payments
+    product-url: http://api-gateway:8020/api/v1/products

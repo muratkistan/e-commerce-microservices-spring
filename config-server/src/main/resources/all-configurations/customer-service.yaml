@@ -1,6 +1,17 @@
 spring:
+  profiles:
+    active: docker
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/customer?ssl=false
 server:
   port: 8090
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://ms-mongo:27017/customer?ssl=false

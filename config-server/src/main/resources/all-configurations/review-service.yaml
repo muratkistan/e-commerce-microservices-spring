@@ -3,6 +3,8 @@ server:
   port: 8030
 
 spring:
+  profiles:
+    active: docker
   data:
     elasticsearch:
       cluster-names: review-cluster
@@ -12,5 +14,20 @@ spring:
 
 application:
   config:
-    customer-url: http://localhost:8222/api/v1/customers
-    product-url: http://localhost:8222/api/v1/products
+    customer-url: http://localhost:8020/api/v1/customers
+    product-url:  http://localhost:8020/api/v1/products
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    elasticsearch:
+      cluster-names: review-cluster
+      cluster-node: ms-elasticsearch:9200
+
+application:
+  config:
+    customer-url: http://api-gateway:8020/api/v1/customers
+    product-url:  http://api-gateway:8020/api/v1/products
