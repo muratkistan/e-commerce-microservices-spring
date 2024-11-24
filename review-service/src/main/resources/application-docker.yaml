@@ -1,0 +1,8 @@
+#spring.data.elasticsearch.cluster-names=review-cluster
+#spring.data.elasticsearch.cluster-node=localhost:9200
+
+spring:
+  config:
+    import: optional:configserver:http://config-server:8888
+  application:
+    name: review-service
