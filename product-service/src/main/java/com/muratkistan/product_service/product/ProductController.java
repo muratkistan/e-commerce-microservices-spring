@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping("/exists/{productId}")
-    public ResponseEntity<Boolean> existsById(@PathVariable("productId") String productId
+    public ResponseEntity<Boolean> existsById(@PathVariable("productId") Integer productId
     ) {
         return ResponseEntity.ok(service.existsById(productId));
     }

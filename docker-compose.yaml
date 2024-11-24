@@ -1,15 +1,207 @@
 services:
-  zipkin:
-    container_name: zipkin
+  config-server:
+    image: muratkistan/config-server:latest
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - my-network
+
+  service-registry:
+    image: muratkistan/service-registry:latest
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    image: muratkistan/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8020:8020"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+  customer-service:
+    image: muratkistan/customer-service:latest
+    container_name: customer-service
+    ports:
+      - "8090:8090"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+      - ms-mongo
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  product-service:
+    image: muratkistan/product-service:latest
+    container_name: product-service
+    ports:
+      - "8050:8050"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+      - ms-postgre
+      - ms-redis
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+  notification-service:
+    image: muratkistan/notification-service:latest
+    container_name: notification-service
+    ports:
+      - "8040:8040"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+      - ms-kafka
+      - ms-mail-dev
+      - ms-mongo
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+  order-service:
+    image: muratkistan/order-service:latest
+    container_name: order-service
+    ports:
+      - "8070:8070"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+  payment-service:
+    image: muratkistan/payment-service:latest
+    container_name: payment-service
+    ports:
+      - "8060:8060"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+      - ms-kafka
+      - ms-postgre
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  review-service:
+    image: muratkistan/review-service:latest
+    container_name: review-service
+    ports:
+      - "8030:8030"
+    networks:
+      - my-network
+    depends_on:
+      - config-server
+      - service-registry
+      - ms-elasticsearch
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  ms-postgre:
+    container_name: ms-postgre
+    image: postgres
+    environment:
+      POSTGRES_USER: muratkistan
+      POSTGRES_PASSWORD: muratkistan
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: ms-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  ms-mongo:
+    image: mongo
+    container_name: ms-mongo
+    ports:
+      - 27018:27017
+    volumes:
+      - mongo:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=muratkistan
+      - MONGO_INITDB_ROOT_PASSWORD=muratkistan
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=muratkistan
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=muratkistan
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    networks:
+      - my-network
+
+
+  ms-redis:
+    image: redis:latest
+    container_name: ms-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+    restart: unless-stopped
+
+
+  ms-zipkin:
+    container_name: ms-zipkin
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
     networks:
-      - microservices-net
+      - my-network
 
-  zookeeper:
+  ms-zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper
+    container_name: ms-zookeeper
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -17,14 +209,14 @@ services:
     ports:
       - "22181:2181"
     networks:
-      - microservices-net
-  kafka:
+      - my-network
+  ms-kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: ms_kafka
+    container_name: ms-kafka
     ports:
       - "9092:9092"
     depends_on:
-      - zookeeper
+      - ms-zookeeper
     environment:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -33,15 +225,53 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
     networks:
-      - microservices-net
+      - my-network
 
-  mail-dev:
+  ms-mail-dev:
     container_name: ms-mail-dev
     image: maildev/maildev
     ports:
       - 1080:1080
       - 1025:1025
 
+  ms-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: ms-elasticsearch
+    environment:
+      - node.name=review-node01
+      - cluster.name=review-cluster
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms128m -Xmx128m
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - review-es-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - my-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://ms-elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks:
+      - my-network
+    depends_on:
+      - ms-elasticsearch
+
 networks:
-  microservices-net:
+  my-network:
     driver: bridge
+
+
+volumes:
+  postgres:
+  pgadmin:
+  mongo:
+  review-es-data:
