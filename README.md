@@ -1,11 +1,13 @@
 # E-Commerce Microservices Project
 
-This project is an example of an e-commerce application built using microservices architecture. The application consists of several microservices, each responsible for a specific domain of the e-commerce platform.
+This project is an example of an e-commerce application built using microservices architecture. The application consists of microservices, each responsible for a specific domain of the e-commerce platform. All services have been containerized and converted into Docker images. All services and dependencies are brought up using Docker.
 
 ## Table of Contents
-
-- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Architecture](#architecture)
 - [Technologies](#technologies)
+- [Docker Containers](#docker-containers)
 - [Services](#services)
   - [Config Server](#config-server)
   - [Service Registry](#service-registry)
@@ -16,13 +18,31 @@ This project is an example of an e-commerce application built using microservice
   - [Order Service](#order-service)
   - [Payment Service](#payment-service)
   - [Notification Service](#notification-service)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [License](#license)
+
+
+# Getting Started
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/muratkistan/e-commerce-microservices-spring.git
+```
+
+2. Navigate to the main folder:
+
+```bash
+cd e-commerce-microservices-spring
+```
+3. Start application using docker-compose:
+
+```bash
+docker-compose up -d
+```
 
 ## Architecture
 
-The application follows a microservices architecture, where each service is independently deployable and scalable. The services communicate with each other using REST APIs.<br><br>
+The application follows a microservices architecture, where each service is independently deployable and scalable. The services are deployed on the same Docker network. They can discover each other using Docker service names and Eureka Service Registry. They communicate with each other using Apache Kafka and Feign Client.<br><br>
 ![e-commerce-diagram-Murat drawio1 svg](https://github.com/user-attachments/assets/6ec5caee-98d0-407b-b3d7-e5b0094b80e6)
 
 
@@ -43,6 +63,28 @@ The application follows a microservices architecture, where each service is inde
 - Redis
 - Elasticsearch
 - Docker
+
+## Docker Containers
+Container Name | Expose Port Mapping |
+--- | --- |
+config-server | `8888`
+service-registry | `8761`
+api-gateway | `8020`
+customer-service | `8090`
+product-service | `8050`
+review-service | `8030`
+notification-service | `8040`
+order-service | `8070`
+payment-service | `8060`
+ms-postgre | `5433`
+ms-pgadmin | `5050`
+ms-mongo | `27018`
+mongo-express | `8081`
+ms-redis | `6379`
+ms-zipkin | `9411`
+ms-kafka | `9092`
+ms-elasticsearch | `9200`
+kibana | `5601`
 
 
 ## Services
@@ -67,12 +109,12 @@ The Customer Service is responsible for managing customer information within the
 #### Endpoints
 | Http Methods | Endpoints               | Explanations                       |
 | :--------    | :-------                | :--------------------------------  |
-| GET          | `/customers`            | Fetch all customers                |
-| GET          | `/customers/{id}`       | Fetch customer by ID               |
-| POST         | `/customers`            | Create a new customer              |
-| PUT          | `/customers/{id}`       | Update customer information        |
-| DELETE       | `/customers/{id}`       | Delete customer by ID              |
-| GET          | `/customers/exists/{customerId}` | Check if customer exists by ID |
+| GET          | `/api/v1/customers`            | Fetch all customers                |
+| GET          | `/api/v1/customers/{id}`       | Fetch customer by ID               |
+| POST         | `/api/v1/customers`            | Create a new customer              |
+| PUT          | `/api/v1/customers/{id}`       | Update customer information        |
+| DELETE       | `/api/v1/customers/{id}`       | Delete customer by ID              |
+| GET          | `/api/v1/customers/exists/{customerId}` | Check if customer exists by ID |
 
 ### Product Service
 
@@ -86,13 +128,13 @@ The Product Service is responsible for managing product information within the e
 #### Endpoints
 | Http Methods | Endpoints                  | Explanations                       |
 | :--------    | :-------                   | :--------------------------------  |
-| GET          | `/products`                | Fetch all products                 |
-| GET          | `/products/{id}`           | Fetch product by ID                |
-| POST         | `/products`                | Create a new product               |
-| PUT          | `/products/{id}`           | Update product information         |
-| DELETE       | `/products/{id}`           | Delete product by ID               |
-| POST         | `/products/purchase`       | Purchase a product                 |
-| GET          | `/products/exists/{productId}` | Check if product exists by ID  |
+| GET          | `/api/v1/products`                | Fetch all products                 |
+| GET          | `/api/v1/products/{id}`           | Fetch product by ID                |
+| POST         | `/api/v1/products`                | Create a new product               |
+| PUT          | `/api/v1/products/{id}`           | Update product information         |
+| DELETE       | `/api/v1/products/{id}`           | Delete product by ID               |
+| POST         | `/api/v1/products/purchase`       | Purchase a product                 |
+| GET          | `/api/v1/products/exists/{productId}` | Check if product exists by ID  |
 
 
 
