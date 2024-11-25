@@ -38,6 +38,11 @@ spring:
     url: jdbc:postgresql://ms-postgre:5432/payment
     username: muratkistan
     password: muratkistan
+    jpa:
+      hibernate:
+        ddl-auto: update
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
     producer:

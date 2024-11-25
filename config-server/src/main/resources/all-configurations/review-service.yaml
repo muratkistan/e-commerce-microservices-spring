@@ -5,12 +5,15 @@ server:
 spring:
   profiles:
     active: docker
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   data:
     elasticsearch:
       cluster-names: review-cluster
       cluster-node: localhost:9200
-
-
 
 application:
   config:
