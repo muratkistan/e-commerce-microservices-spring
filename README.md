@@ -43,7 +43,7 @@ docker-compose up -d
 ## Architecture
 
 The application follows a microservices architecture, where each service is independently deployable and scalable. The services are deployed on the same Docker network. They can discover each other using Docker service names and Eureka Service Registry. They communicate with each other using Apache Kafka and Feign Client.<br><br>
-![e-commerce-diagram-Murat drawio1 svg](https://github.com/user-attachments/assets/6ec5caee-98d0-407b-b3d7-e5b0094b80e6)
+![e-commerce-diagram-Murat drawio](https://github.com/user-attachments/assets/1575bb85-f29d-44ef-9be6-700560a5918d)
 
 
 ## Technologies
@@ -56,7 +56,7 @@ The application follows a microservices architecture, where each service is inde
 - Spring Cloud Config Server
 - Spring Validation
 - Zipkin
-- Open Feign
+- OpenFeign
 - Apache Kafka
 - PostgreSql
 - Mongo DB
