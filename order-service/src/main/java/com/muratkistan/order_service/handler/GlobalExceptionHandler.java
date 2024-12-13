@@ -2,6 +2,7 @@ package com.muratkistan.order_service.handler;
 
 import com.muratkistan.order_service.exception.OrderException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,4 +46,14 @@ public class GlobalExceptionHandler {
                 .status(BAD_REQUEST)
                 .body(exp.getMsg());
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException exp) {
+        return ResponseEntity
+                .status(CONFLICT)
+                .body("ERROR: duplicate key value violates unique constraint");
+
+    }
+
+
 }
